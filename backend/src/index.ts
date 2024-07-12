@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import express, { Application } from "express";
 import { authRouter } from "./routes/auth-router";
+import { ResponseError } from "./error/error";
 
 const app: Application = express();
 
@@ -11,14 +12,17 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.use("/api/auth", authRouter)
+app.use("/api/auth", authRouter);
 
-app.use((err: any,req: Request, res: Response, next: NextFunction) => {
-  const statusCode = err.statusCode || 500
-  const message = err.message || "Internal Server Error";
-  return res.status(statusCode).json({
-    success: false,
-    statusCode,
-    message,
-  })
-}) 
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ResponseError) {
+    return res.status(err.statusCode).json({
+      statusCode: err.statusCode,
+      message: err.message,
+    });
+  }
+  return res.status(500).json({
+    statusCode: 500,
+    message: err.message,
+  });
+});
