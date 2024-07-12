@@ -2,6 +2,13 @@
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
       <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+      <div
+        v-if="loginError"
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4"
+        role="alert"
+      >
+        <span class="block sm:inline">{{ loginError }}</span>
+      </div>
       <form @submit.prevent="login" class="space-y-6">
         <BaseInputText
           id="username"
@@ -18,14 +25,7 @@
           placeholder="Enter your username"
           required
         />
-        <div>
-          <button
-            type="submit"
-            class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            Login
-          </button>
-        </div>
+        <BaseButton value="Login" />
       </form>
     </div>
   </div>
@@ -36,11 +36,12 @@ import type { UserLoginPayload } from "@/types";
 import { AuthService } from "@/services/AuthService";
 import { useRouter } from "vue-router";
 import BaseInputText from "@/components/BaseInputText.vue";
-
+import BaseButton from "@/components/BaseButton.vue";
 export default defineComponent({
   name: "LoginPage",
   components: {
     BaseInputText,
+    BaseButton,
   },
   setup() {
     const formData = ref<UserLoginPayload>({
@@ -48,6 +49,7 @@ export default defineComponent({
       password: "",
     });
     const router = useRouter();
+    const loginError = ref<string | null>(null);
     const login = async () => {
       try {
         const response = await AuthService.login(formData.value);
@@ -55,14 +57,14 @@ export default defineComponent({
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
         router.push({ name: "home" });
-        console.log(response);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        loginError.value = error.response.data.message;
       }
     };
     return {
       formData,
       login,
+      loginError,
     };
   },
 });
