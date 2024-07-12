@@ -4,17 +4,17 @@ const prisma = new PrismaClient();
 
 export interface CreateUserRequest {
     name: string;
-    email: string;
+    username: string;
     password: string;
 }
 export interface LoginUserRequest {
-    email: string;
+    username: string;
     password: string;
 }
 export const createUser = async (user: CreateUserRequest) => {
     return await prisma.user.create({data: user})
 }
 
-export const findByEmail = async (email: string) => {
-    return await prisma.user.findUnique({where: {email}})
+export const findByUsername = async (username: string) => {
+    return await prisma.user.findUnique({where: {username}})
 }

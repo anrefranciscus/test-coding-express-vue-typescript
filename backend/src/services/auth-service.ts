@@ -3,7 +3,7 @@ import {
   CreateUserRequest,
   LoginUserRequest,
   createUser,
-  findByEmail,
+  findByUsername,
 } from "../models/user-model";
 import bcrypt from "bcryptjs";
 import HttpStatus from "http-status";
@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 const SECRET_KEY = process.env.JWT_SECRET || "abc123";
 export class AuthService {
   static async register(userDTO: CreateUserRequest) {
-    const existingUser = await findByEmail(userDTO.email);
+    const existingUser = await findByUsername(userDTO.username);
     if (existingUser) {
       throw new ResponseError(HttpStatus.BAD_REQUEST, "Email already taken");
     }
@@ -20,7 +20,7 @@ export class AuthService {
     return userRegister;
   }
   static async login(loginDTO: LoginUserRequest) {
-    const user = await findByEmail(loginDTO.email);
+    const user = await findByUsername(loginDTO.username);
 
     if (!user) {
       throw new ResponseError(HttpStatus.UNAUTHORIZED, "User not found");
@@ -39,7 +39,7 @@ export class AuthService {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email,
+        username: user.username,
       },
       token: token,
     };
