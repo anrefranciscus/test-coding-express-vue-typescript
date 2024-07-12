@@ -2,14 +2,13 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export interface User {
-    id?:number;
+export interface CreateUserRequest {
     name: string;
     email: string;
     password: string;
 }
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: CreateUserRequest) => {
     return await prisma.user.create({data: user})
 }
 
