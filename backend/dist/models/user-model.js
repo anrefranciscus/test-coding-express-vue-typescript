@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findByEmail = exports.createUser = void 0;
+exports.findByUsername = exports.createUser = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma.user.create({ data: user });
 });
 exports.createUser = createUser;
-const findByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma.user.findUnique({ where: { email } });
+const findByUsername = (username) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma.user.findUnique({ where: { username } });
 });
-exports.findByEmail = findByEmail;
+exports.findByUsername = findByUsername;

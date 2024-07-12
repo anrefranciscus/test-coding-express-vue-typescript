@@ -13,7 +13,10 @@ export class AuthService {
   static async register(userDTO: CreateUserRequest) {
     const existingUser = await findByUsername(userDTO.username);
     if (existingUser) {
-      throw new ResponseError(HttpStatus.BAD_REQUEST, "Email already taken");
+      throw new ResponseError(
+        HttpStatus.BAD_REQUEST,
+        `Username ${userDTO.username} already taken`
+      );
     }
     userDTO.password = await bcrypt.hashSync(userDTO.password, 10);
     const userRegister = await createUser(userDTO);
@@ -23,7 +26,10 @@ export class AuthService {
     const user = await findByUsername(loginDTO.username);
 
     if (!user) {
-      throw new ResponseError(HttpStatus.UNAUTHORIZED, "User not found");
+      throw new ResponseError(
+        HttpStatus.UNAUTHORIZED,
+        `Username ${loginDTO.username} not found`
+      );
     }
     const isPasswordValid = await bcrypt.compare(
       loginDTO.password,

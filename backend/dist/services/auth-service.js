@@ -22,7 +22,7 @@ const SECRET_KEY = process.env.JWT_SECRET || "abc123";
 class AuthService {
     static register(userDTO) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existingUser = yield (0, user_model_1.findByEmail)(userDTO.email);
+            const existingUser = yield (0, user_model_1.findByUsername)(userDTO.username);
             if (existingUser) {
                 throw new error_1.ResponseError(http_status_1.default.BAD_REQUEST, "Email already taken");
             }
@@ -33,7 +33,7 @@ class AuthService {
     }
     static login(loginDTO) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield (0, user_model_1.findByEmail)(loginDTO.email);
+            const user = yield (0, user_model_1.findByUsername)(loginDTO.username);
             if (!user) {
                 throw new error_1.ResponseError(http_status_1.default.UNAUTHORIZED, "User not found");
             }
@@ -48,7 +48,7 @@ class AuthService {
                 user: {
                     id: user.id,
                     name: user.name,
-                    email: user.email,
+                    username: user.username,
                 },
                 token: token,
             };
