@@ -24,7 +24,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             const existingUser = yield (0, user_model_1.findByUsername)(userDTO.username);
             if (existingUser) {
-                throw new error_1.ResponseError(http_status_1.default.BAD_REQUEST, "Email already taken");
+                throw new error_1.ResponseError(http_status_1.default.BAD_REQUEST, `Username ${userDTO.username} already taken`);
             }
             userDTO.password = yield bcryptjs_1.default.hashSync(userDTO.password, 10);
             const userRegister = yield (0, user_model_1.createUser)(userDTO);
@@ -35,7 +35,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield (0, user_model_1.findByUsername)(loginDTO.username);
             if (!user) {
-                throw new error_1.ResponseError(http_status_1.default.UNAUTHORIZED, "User not found");
+                throw new error_1.ResponseError(http_status_1.default.UNAUTHORIZED, `Username ${loginDTO.username} not found`);
             }
             const isPasswordValid = yield bcryptjs_1.default.compare(loginDTO.password, user.password);
             if (!isPasswordValid) {
