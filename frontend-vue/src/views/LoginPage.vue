@@ -22,7 +22,7 @@
           label="Password"
           type="password"
           v-model="formData.password"
-          placeholder="Enter your username"
+          placeholder="Enter your password"
           required
         />
         <BaseButton value="Login" />

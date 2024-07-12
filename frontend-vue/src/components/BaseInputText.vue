@@ -6,7 +6,7 @@
     <input
       :id="id"
       :type="type"
-      :value="value"
+      :value="modelValue"
       @input="handleInput"
       :placeholder="placeholder"
       class="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
@@ -29,7 +29,7 @@ export default defineComponent({
       type: String,
       default: "text",
     },
-    value: {
+    modelValue: {
       type: [String, Number],
       default: "",
     },
