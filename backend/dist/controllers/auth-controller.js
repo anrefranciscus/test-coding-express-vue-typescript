@@ -17,7 +17,7 @@ class AuthController {
             try {
                 const request = req.body;
                 yield auth_service_1.AuthService.register(request);
-                res.status(201).json('User created successfully!');
+                res.status(201).json("User created successfully!");
             }
             catch (error) {
                 next(error);

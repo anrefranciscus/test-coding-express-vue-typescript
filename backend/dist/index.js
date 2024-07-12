@@ -12,3 +12,12 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 app.use("/api/auth", auth_router_1.authRouter);
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    return res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message,
+    });
+});

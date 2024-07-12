@@ -27,5 +27,9 @@ class AuthService {
             return userRegister;
         });
     }
+    static login(loginDTO) {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
+    }
 }
 exports.AuthService = AuthService;
