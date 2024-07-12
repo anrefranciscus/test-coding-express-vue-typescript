@@ -24,5 +24,20 @@ class AuthController {
             }
         });
     }
+    static login(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const request = req.body;
+                const result = yield auth_service_1.AuthService.login(request);
+                return res.status(200).json({
+                    success: true,
+                    data: result
+                });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;

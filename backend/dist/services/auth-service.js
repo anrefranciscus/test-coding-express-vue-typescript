@@ -17,10 +17,12 @@ const error_1 = require("../error/error");
 const user_model_1 = require("../models/user-model");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const http_status_1 = __importDefault(require("http-status"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const SECRET_KEY = process.env.JWT_SECRET || "abc123";
 class AuthService {
     static register(userDTO) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existingUser = yield (0, user_model_1.findByUsername)(userDTO.email);
+            const existingUser = yield (0, user_model_1.findByEmail)(userDTO.email);
             if (existingUser) {
                 throw new error_1.ResponseError(http_status_1.default.BAD_REQUEST, "Email already taken");
             }
@@ -30,7 +32,27 @@ class AuthService {
         });
     }
     static login(loginDTO) {
-        return __awaiter(this, void 0, void 0, function* () { });
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield (0, user_model_1.findByEmail)(loginDTO.email);
+            if (!user) {
+                throw new error_1.ResponseError(http_status_1.default.UNAUTHORIZED, "User not found");
+            }
+            const isPasswordValid = yield bcryptjs_1.default.compare(loginDTO.password, user.password);
+            if (!isPasswordValid) {
+                throw new error_1.ResponseError(http_status_1.default.UNAUTHORIZED, "Password is wrong");
+            }
+            const token = yield jsonwebtoken_1.default.sign({ id: user.id }, SECRET_KEY, {
+                expiresIn: "1h",
+            });
+            return {
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                },
+                token: token,
+            };
+        });
     }
 }
 exports.AuthService = AuthService;

@@ -8,7 +8,7 @@ import {
 import bcrypt from "bcryptjs";
 import HttpStatus from "http-status";
 import jwt from "jsonwebtoken";
-const SECRET_KEY = process.env.JWT_SECRET || 'abc123';
+const SECRET_KEY = process.env.JWT_SECRET || "abc123";
 export class AuthService {
   static async register(userDTO: CreateUserRequest) {
     const existingUser = await findByEmail(userDTO.email);
@@ -23,19 +23,25 @@ export class AuthService {
     const user = await findByEmail(loginDTO.email);
 
     if (!user) {
-      throw new ResponseError(
-        HttpStatus.UNAUTHORIZED,
-        "User not found"
-      );
+      throw new ResponseError(HttpStatus.UNAUTHORIZED, "User not found");
     }
-    const isPasswordValid = await bcrypt.compare(loginDTO.password, user.password)
-    if(!isPasswordValid) {
-        throw new ResponseError(HttpStatus.UNAUTHORIZED, "Password is wrong")
+    const isPasswordValid = await bcrypt.compare(
+      loginDTO.password,
+      user.password
+    );
+    if (!isPasswordValid) {
+      throw new ResponseError(HttpStatus.UNAUTHORIZED, "Password is wrong");
     }
-    const token = await jwt.sign({id: user.id}, SECRET_KEY, {expiresIn: '1h'})
+    const token = await jwt.sign({ id: user.id }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
     return {
-        user: user,
-        token: token
-    }
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      token: token,
+    };
   }
 }
