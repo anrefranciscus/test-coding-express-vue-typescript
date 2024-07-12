@@ -4,6 +4,8 @@
   "description": "restfull api login register using express typescript",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Anre Franciscus",
