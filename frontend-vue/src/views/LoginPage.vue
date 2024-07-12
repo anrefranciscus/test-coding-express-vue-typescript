@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="login">
+  <form @submit.prevent="login" class="flex flex-col">
     <input
       type="text"
       v-model="formData.username"
@@ -19,6 +19,7 @@
 import { defineComponent, ref } from "vue";
 import type { UserLoginPayload } from "@/types";
 import { AuthService } from "@/services/AuthService";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "LoginPage",
@@ -27,11 +28,14 @@ export default defineComponent({
       username: "",
       password: "",
     });
-
+    const router = useRouter();
     const login = async () => {
       try {
         const response = await AuthService.login(formData.value);
-        const {user, token} = response.data
+        const { user, token } = response.data;
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        router.push({ name: "home" });
         console.log(response);
       } catch (error) {
         console.log(error);
