@@ -1,11 +1,19 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
 
-const app = createApp(App)
+const app = createApp(App);
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem("token");
 
-app.use(router)
+  if (to.name !== "LoginPage" && to.name !== 'RegisterPage' && !isAuthenticated) {
+    next({ name: "LoginPage" });
+  } else {
+    next();
+  }
+});
+app.use(router);
 
-app.mount('#app')
+app.mount("#app");

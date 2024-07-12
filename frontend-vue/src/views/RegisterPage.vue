@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-      <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+      <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
       <div
         v-if="loginError"
         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4"
@@ -9,7 +9,14 @@
       >
         <span class="block sm:inline">{{ loginError }}</span>
       </div>
-      <form @submit.prevent="login" class="space-y-6">
+      <form @submit.prevent="registerUser" class="space-y-6">
+        <BaseInputText
+          id="name"
+          label="Name"
+          v-model="formData.name"
+          placeholder="Enter your name"
+          required
+        />
         <BaseInputText
           id="username"
           label="Username"
@@ -27,7 +34,10 @@
         />
         <BaseButton value="Login" />
         <p class="text-sm text-center mt-4">
-          Don't have an account? <router-link to="/register" class="text-indigo-600 hover:underline">Register here</router-link>.
+          have an account?
+          <router-link to="/login" class="text-indigo-600 hover:underline"
+            >login here</router-link
+          >.
         </p>
       </form>
     </div>
@@ -35,38 +45,36 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import type { UserLoginPayload } from "@/types";
+import type { UserRegisterPayload } from "@/types";
 import { AuthService } from "@/services/AuthService";
 import { useRouter } from "vue-router";
 import BaseInputText from "@/components/BaseInputText.vue";
 import BaseButton from "@/components/BaseButton.vue";
 export default defineComponent({
-  name: "LoginPage",
+  name: "RegisterPage",
   components: {
     BaseInputText,
     BaseButton,
   },
   setup() {
-    const formData = ref<UserLoginPayload>({
+    const formData = ref<UserRegisterPayload>({
+      name: "",
       username: "",
       password: "",
     });
     const router = useRouter();
     const loginError = ref<string | null>(null);
-    const login = async () => {
+    const registerUser = async () => {
       try {
-        const response = await AuthService.login(formData.value);
-        const { user, token } = response.data;
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
-        router.push({ name: "home" });
+        await AuthService.register(formData.value);
+        router.push("/login");
       } catch (error: any) {
         loginError.value = error.response.data.message;
       }
     };
     return {
       formData,
-      login,
+      registerUser,
       loginError,
     };
   },
